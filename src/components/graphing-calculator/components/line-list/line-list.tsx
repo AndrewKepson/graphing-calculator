@@ -1,31 +1,48 @@
-import { Button, InputAdornment, Stack, Switch, TextField, Typography } from "@mui/material";
-import { LineListCard, LineListHeader, LineListItem, LineListSwatch } from "./line-list.styles";
-import type { GraphLineListProps } from "./line-list.interface";
+import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
+import {
+  Button,
+  IconButton,
+  InputAdornment,
+  Stack,
+  Switch,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { LineListCard, LineListHeader, LineListItem, LineListSwatch } from './line-list.styles';
+import type { GraphLineListProps } from './line-list.interface';
 
 export const GraphLineList = ({
   lines,
   selectedLineId,
   onAddLine,
+  onDeleteAll,
   onExpressionChange,
   onSelectLine,
   onToggleLine,
+  onDeleteLine,
 }: GraphLineListProps) => {
   return (
     <LineListCard>
       <LineListHeader>
         <div>
           <Typography variant="h6">Lines</Typography>
-          <Typography variant="body2" color="#6b625b">
+          <Typography variant="body2" color="text.secondary">
             Edit expressions and toggle visibility
           </Typography>
         </div>
-        <Button variant="contained" onClick={onAddLine}>
-          Add
-        </Button>
+        <Stack direction="row" spacing={1}>
+          <Button variant="contained" onClick={onAddLine}>
+            Add
+          </Button>
+          <Button variant="outlined" startIcon={<DeleteSweepIcon />} onClick={onDeleteAll}>
+            Clear
+          </Button>
+        </Stack>
       </LineListHeader>
       <Stack spacing={1.5}>
         {lines.length === 0 ? (
-          <Typography variant="body2" color="#6b625b">
+          <Typography variant="body2" color="text.secondary">
             Add a line to begin plotting.
           </Typography>
         ) : (
@@ -56,6 +73,16 @@ export const GraphLineList = ({
                   onClick={(event) => event.stopPropagation()}
                   size="small"
                 />
+                <IconButton
+                  aria-label="Delete line"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onDeleteLine(line.id);
+                  }}
+                  size="small"
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
               </LineListItem>
             );
           })

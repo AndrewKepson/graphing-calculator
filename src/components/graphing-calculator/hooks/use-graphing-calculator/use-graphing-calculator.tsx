@@ -20,6 +20,14 @@ export const useGraphingCalculator = (): UseGraphingCalculatorResult => {
     setLines((prev) => [...prev, line]);
   }, []);
 
+  const resetCalculator = useCallback(() => {
+    setLines([]);
+    setShading([]);
+    setViewport(DEFAULT_VIEWPORT);
+    setSelectedLineId(undefined);
+    setRecomputeKey(0);
+  }, []);
+
   const updateLine = useCallback((lineId: string, changes: Partial<GraphLine>) => {
     setLines((prev) =>
       prev.map((line) => (line.id === lineId ? ({ ...line, ...changes, id: line.id } as GraphLine) : line))
@@ -61,6 +69,7 @@ export const useGraphingCalculator = (): UseGraphingCalculatorResult => {
       addLine,
       updateLine,
       removeLine,
+      resetCalculator,
       addShading,
       updateShading,
       removeShading,
@@ -68,7 +77,18 @@ export const useGraphingCalculator = (): UseGraphingCalculatorResult => {
       selectLine,
       recompute,
     }),
-    [addLine, updateLine, removeLine, addShading, updateShading, removeShading, setViewportSafe, selectLine, recompute]
+    [
+      addLine,
+      updateLine,
+      removeLine,
+      resetCalculator,
+      addShading,
+      updateShading,
+      removeShading,
+      setViewportSafe,
+      selectLine,
+      recompute,
+    ]
   );
 
   return {

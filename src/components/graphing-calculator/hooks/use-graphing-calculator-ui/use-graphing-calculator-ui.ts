@@ -62,6 +62,22 @@ export const useGraphingCalculatorUi = (): UseGraphingCalculatorUiResult => {
     [actions, lines]
   )
 
+  const deleteLine = useCallback(
+    (lineId: string) => {
+      actions.removeLine(lineId)
+      if (selectedLineId === lineId) {
+        actions.selectLine(undefined)
+      }
+    },
+    [actions, selectedLineId]
+  )
+
+  const deleteAllLines = useCallback(() => {
+    actions.resetCalculator()
+    counterRef.current = 1
+    addCartesianLine()
+  }, [actions, addCartesianLine])
+
   const selectLine = useCallback(
     (lineId?: string) => {
       actions.selectLine(lineId)
@@ -122,6 +138,8 @@ export const useGraphingCalculatorUi = (): UseGraphingCalculatorUiResult => {
       addCartesianLine,
       setLineExpression,
       toggleLineVisibility,
+      deleteLine,
+      deleteAllLines,
       selectLine,
       updateViewport,
       insertIntoSelectedLine,
@@ -138,6 +156,8 @@ export const useGraphingCalculatorUi = (): UseGraphingCalculatorUiResult => {
       addCartesianLine,
       setLineExpression,
       toggleLineVisibility,
+      deleteLine,
+      deleteAllLines,
       selectLine,
       updateViewport,
       insertIntoSelectedLine,

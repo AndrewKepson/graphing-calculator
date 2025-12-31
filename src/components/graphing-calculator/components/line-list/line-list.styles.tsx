@@ -25,13 +25,22 @@ export const LineListHeader = styled(Box)(
       border-radius: 10px;
       padding: 6px 16px;
     }
+
+    .MuiButton-outlined {
+      border-color: ${theme.palette.divider};
+      color: ${theme.palette.text.primary};
+      text-transform: none;
+      font-weight: 600;
+      border-radius: 10px;
+      padding: 6px 16px;
+    }
   `
 )
 
 export const LineListItem = styled(Box)<{ $selected: boolean }>(
   ({ $selected, theme }) => css`
     display: grid;
-    grid-template-columns: 14px 1fr auto;
+    grid-template-columns: 14px 1fr auto auto;
     align-items: center;
     gap: 10px;
     padding: 10px 12px;

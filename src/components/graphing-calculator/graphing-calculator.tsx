@@ -26,6 +26,8 @@ const GraphingCalculatorContent = () => {
     addCartesianLine,
     setLineExpression,
     toggleLineVisibility,
+    deleteLine,
+    deleteAllLines,
     selectLine,
     updateViewport,
     insertIntoSelectedLine,
@@ -44,14 +46,16 @@ const GraphingCalculatorContent = () => {
     <GraphingCalculatorContainer>
       <GraphingCalculatorLayout>
         <GraphingSidebar>
-          <GraphLineList
-            lines={lines}
-            selectedLineId={selectedLineId}
-            onAddLine={addCartesianLine}
-            onExpressionChange={setLineExpression}
-            onSelectLine={selectLine}
-            onToggleLine={toggleLineVisibility}
-          />
+            <GraphLineList
+              lines={lines}
+              selectedLineId={selectedLineId}
+              onAddLine={addCartesianLine}
+              onExpressionChange={setLineExpression}
+              onSelectLine={selectLine}
+              onToggleLine={toggleLineVisibility}
+              onDeleteLine={deleteLine}
+              onDeleteAll={deleteAllLines}
+            />
           <GraphingKeypad
             onInsert={insertIntoSelectedLine}
             onReset={resetSelectedLine}
