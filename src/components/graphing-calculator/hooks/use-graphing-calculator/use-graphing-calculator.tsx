@@ -1,0 +1,82 @@
+import { useCallback, useMemo, useState } from "react";
+import type { GraphLine, GraphShading, GraphViewport } from "../../types";
+import type { UseGraphingCalculatorResult } from "./use-graphing-calculator.interface";
+
+const DEFAULT_VIEWPORT: GraphViewport = {
+  xMin: -10,
+  xMax: 10,
+  yMin: -10,
+  yMax: 10,
+};
+
+export const useGraphingCalculator = (): UseGraphingCalculatorResult => {
+  const [lines, setLines] = useState<GraphLine[]>([]);
+  const [shading, setShading] = useState<GraphShading[]>([]);
+  const [viewport, setViewport] = useState<GraphViewport>(DEFAULT_VIEWPORT);
+  const [selectedLineId, setSelectedLineId] = useState<string | undefined>(undefined);
+  const [recomputeKey, setRecomputeKey] = useState(0);
+
+  const addLine = useCallback((line: GraphLine) => {
+    setLines((prev) => [...prev, line]);
+  }, []);
+
+  const updateLine = useCallback((lineId: string, changes: Partial<GraphLine>) => {
+    setLines((prev) =>
+      prev.map((line) => (line.id === lineId ? ({ ...line, ...changes, id: line.id } as GraphLine) : line))
+    );
+  }, []);
+
+  const removeLine = useCallback((lineId: string) => {
+    setLines((prev) => prev.filter((line) => line.id !== lineId));
+  }, []);
+
+  const addShading = useCallback((item: GraphShading) => {
+    setShading((prev) => [...prev, item]);
+  }, []);
+
+  const updateShading = useCallback((shadingId: string, changes: Partial<GraphShading>) => {
+    setShading((prev) =>
+      prev.map((item) => (item.id === shadingId ? ({ ...item, ...changes, id: item.id } as GraphShading) : item))
+    );
+  }, []);
+
+  const removeShading = useCallback((shadingId: string) => {
+    setShading((prev) => prev.filter((item) => item.id !== shadingId));
+  }, []);
+
+  const setViewportSafe = useCallback((next: GraphViewport) => {
+    setViewport(next);
+  }, []);
+
+  const selectLine = useCallback((lineId?: string) => {
+    setSelectedLineId(lineId);
+  }, []);
+
+  const recompute = useCallback(() => {
+    setRecomputeKey((prev) => prev + 1);
+  }, []);
+
+  const actions = useMemo(
+    () => ({
+      addLine,
+      updateLine,
+      removeLine,
+      addShading,
+      updateShading,
+      removeShading,
+      setViewport: setViewportSafe,
+      selectLine,
+      recompute,
+    }),
+    [addLine, updateLine, removeLine, addShading, updateShading, removeShading, setViewportSafe, selectLine, recompute]
+  );
+
+  return {
+    lines,
+    shading,
+    viewport,
+    selectedLineId,
+    recomputeKey,
+    actions,
+  };
+};
