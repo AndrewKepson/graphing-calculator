@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { GraphLine, GraphShading, GraphViewport } from "../../types";
 import type { UseGraphingCalculatorResult } from "./use-graphing-calculator.interface";
 
@@ -9,8 +9,31 @@ const DEFAULT_VIEWPORT: GraphViewport = {
   yMax: 10,
 };
 
+const STORAGE_KEY = "graphing-calculator.lines";
+
+const loadStoredLines = (): GraphLine[] => {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as GraphLine[]) : [];
+  } catch {
+    return [];
+  }
+};
+
+const persistLines = (lines: GraphLine[]) => {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(lines));
+  } catch {
+    // Ignore storage failures (quota/private mode).
+  }
+};
+
 export const useGraphingCalculator = (): UseGraphingCalculatorResult => {
-  const [lines, setLines] = useState<GraphLine[]>([]);
+  const [lines, setLines] = useState<GraphLine[]>(() => loadStoredLines());
   const [shading, setShading] = useState<GraphShading[]>([]);
   const [viewport, setViewport] = useState<GraphViewport>(DEFAULT_VIEWPORT);
   const [selectedLineId, setSelectedLineId] = useState<string | undefined>(undefined);
@@ -26,6 +49,9 @@ export const useGraphingCalculator = (): UseGraphingCalculatorResult => {
     setViewport(DEFAULT_VIEWPORT);
     setSelectedLineId(undefined);
     setRecomputeKey(0);
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem(STORAGE_KEY);
+    }
   }, []);
 
   const updateLine = useCallback((lineId: string, changes: Partial<GraphLine>) => {
@@ -63,6 +89,10 @@ export const useGraphingCalculator = (): UseGraphingCalculatorResult => {
   const recompute = useCallback(() => {
     setRecomputeKey((prev) => prev + 1);
   }, []);
+
+  useEffect(() => {
+    persistLines(lines);
+  }, [lines]);
 
   const actions = useMemo(
     () => ({
