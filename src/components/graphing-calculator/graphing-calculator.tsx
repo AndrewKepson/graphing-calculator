@@ -4,7 +4,7 @@ import {
   GraphingPanel,
   GraphingSidebar,
 } from "./graphing-calculator.styles";
-import { GraphingCalculatorProvider } from "./context/graphing-calculator-context";
+import { GraphingCalculatorProvider } from "./context";
 import { useGraphingCalculatorUi, useGraphingEngine } from "./hooks";
 import { GraphCanvas, GraphLineList, GraphingKeypad, ViewportPanel } from "./components";
 
